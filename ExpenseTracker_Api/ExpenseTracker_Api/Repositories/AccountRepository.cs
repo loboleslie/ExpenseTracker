@@ -14,7 +14,6 @@ namespace ExpenseTracker_Api.Repositories
         public AccountRepository(ExpenseTrackerDbContext context)
         {
             _context = context;
-            
         }
 
         public Account Add(Account account)

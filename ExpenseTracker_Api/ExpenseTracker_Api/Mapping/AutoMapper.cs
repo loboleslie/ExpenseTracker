@@ -8,7 +8,7 @@ namespace ExpenseTracker_Api.Mapping
     {
         public Automapper() 
         {
-            CreateMap<AccountDTO, Account>();
+            CreateMap<AccountDto, Account>();
         }
         
     }

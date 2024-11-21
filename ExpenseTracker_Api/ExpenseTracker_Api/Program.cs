@@ -28,7 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IValidator<AccountDTO>, AccountDTOValidator>();
+builder.Services.AddScoped<IValidator<AccountDto>, AccountDTOValidator>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 

@@ -16,17 +16,17 @@ namespace ExpenseTracker_Api.Services
     public class AccountService : IAccountService
     {
         private readonly IAccountRepository _accountRepository;
-        private IValidator<AccountDTO> _validator;
+        private IValidator<AccountDto> _validator;
         private IMapper _mapper;
 
-        public AccountService(IAccountRepository accountRepository, IValidator<AccountDTO> validator, IMapper mapper)
+        public AccountService(IAccountRepository accountRepository, IValidator<AccountDto> validator, IMapper mapper)
         {
             _accountRepository = accountRepository;
             _validator = validator;
             _mapper = mapper;
         }
 
-        public async Task<ApiResponses> ModifyAccount(AccountDTO accountDto)
+        public async Task<ApiResponses> ModifyAccount(AccountDto accountDto)
         {            
             
             ApiResponses apiResponses = new ApiResponses();
@@ -129,7 +129,7 @@ namespace ExpenseTracker_Api.Services
             return apiResponses;
         }
 
-        public async Task<ApiResponses> SaveAccount(AccountDTO accountDto)
+        public async Task<ApiResponses> SaveAccount(AccountDto accountDto)
         {
             ApiResponses apiResponses = new ApiResponses();
             

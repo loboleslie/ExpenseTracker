@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace ExpenseTracker_Api.Services.Validator.DTO
 {
-    public class AccountDTOValidator : AbstractValidator<AccountDTO>
+    public class AccountDTOValidator : AbstractValidator<AccountDto>
     {
         public AccountDTOValidator()
         {

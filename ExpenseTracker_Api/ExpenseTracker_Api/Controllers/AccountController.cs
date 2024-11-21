@@ -19,9 +19,9 @@ namespace ExpenseTracker_Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly IValidator<AccountDTO> _validator;
+        private readonly IValidator<AccountDto> _validator;
 
-        public AccountController(IAccountService accountService, IValidator<AccountDTO> validator)
+        public AccountController(IAccountService accountService, IValidator<AccountDto> validator)
         {
             _accountService = accountService;
             _validator = validator;
@@ -36,7 +36,7 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResponses> Add(AccountDTO accountDto)
+        public async Task<ApiResponses> Add(AccountDto accountDto)
         {
             ApiResponses apiResponses = await _accountService.SaveAccount(accountDto);
             
@@ -44,7 +44,7 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpPut]
-        public async Task<ApiResponses> Edit(AccountDTO account)
+        public async Task<ApiResponses> Edit(AccountDto account)
         {
             ApiResponses apiResponses =  await _accountService.ModifyAccount(account);
             return apiResponses;

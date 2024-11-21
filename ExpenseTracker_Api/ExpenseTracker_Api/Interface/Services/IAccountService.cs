@@ -6,8 +6,8 @@ namespace ExpenseTracker_Api.Interface.Services
 {
     public interface IAccountService
     {
-        Task<ApiResponses> SaveAccount(AccountDTO account);
-        Task<ApiResponses> ModifyAccount(AccountDTO account);
+        Task<ApiResponses> SaveAccount(AccountDto account);
+        Task<ApiResponses> ModifyAccount(AccountDto account);
         Task<ApiResponses> RemoveAccount(int accountId);
         Task<ApiResponses> RetrieveAccount(int accountId);
         Task<ApiResponses> RetrieveAllAccounts();
