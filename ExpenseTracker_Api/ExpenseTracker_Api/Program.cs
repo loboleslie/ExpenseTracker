@@ -31,6 +31,11 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IValidator<AccountDto>, AccountDTOValidator>();
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowReactApp", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    }
+    );
 
 var Configuration = builder.Configuration;
 builder.Services.AddDbContext<ExpenseTrackerDbContext>(options =>
@@ -44,6 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowReactApp");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

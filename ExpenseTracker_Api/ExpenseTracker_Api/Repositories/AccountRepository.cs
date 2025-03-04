@@ -3,7 +3,9 @@ using ExpenseTracker_Api.Interface;
 using ExpenseTracker_Api.Interface.Repositories;
 using ExpenseTracker_Api.Interface.Services;
 using ExpenseTracker_Api.Models;
+using ExpenseTracker_Api.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseTracker_Api.Repositories
 {
@@ -37,9 +39,14 @@ namespace ExpenseTracker_Api.Repositories
             return _context.Accounts.FirstOrDefault(x => x.Id == accountId);
         }
 
-        public List<Account> GetAll()
+        public PaginatedAccountList GetAll(int pageNumber, int pageSize, string searchTerm = "")
         {
-            return _context.Accounts.ToList();
+            var totalPages = _context.Accounts.Where(i => string.IsNullOrEmpty(searchTerm) || i.Name.Contains(searchTerm)).Count();
+            return new PaginatedAccountList()
+            {
+                Accounts = _context.Accounts.Where(i => string.IsNullOrEmpty(searchTerm) || i.Name.Contains(searchTerm)).Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
+                TotalCount = totalPages
+            };
         }
 
         public Account GetByName(string accountName)
@@ -49,7 +56,7 @@ namespace ExpenseTracker_Api.Repositories
 
         public Account Update(Account account)
         {
-            _context.Update(account);
+            _context.Entry(account).State = EntityState.Modified;
             _context.SaveChanges();
             return account;
         }

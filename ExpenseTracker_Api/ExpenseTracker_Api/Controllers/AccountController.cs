@@ -28,9 +28,9 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ApiResponses> Index()
+        public async Task<ApiResponses> Index(int pageNumber = 1, int pageSize = 10, string searchTerm = "")
         {
-            ApiResponses apiResponses = await _accountService.RetrieveAllAccounts();
+            ApiResponses apiResponses = await _accountService.RetrieveAllAccounts(pageNumber, pageSize, searchTerm);
 
             return apiResponses;
         }
@@ -44,9 +44,10 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpPut]
-        public async Task<ApiResponses> Edit(AccountDto account)
+        [Route("{id}")]
+        public async Task<ApiResponses> Edit(int id, [FromBody] AccountDto accountDto)
         {
-            ApiResponses apiResponses =  await _accountService.ModifyAccount(account);
+            ApiResponses apiResponses =  await _accountService.ModifyAccount(id, accountDto);
             return apiResponses;
         }
 

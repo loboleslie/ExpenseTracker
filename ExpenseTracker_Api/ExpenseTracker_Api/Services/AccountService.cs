@@ -26,13 +26,18 @@ namespace ExpenseTracker_Api.Services
             _mapper = mapper;
         }
 
-        public async Task<ApiResponses> ModifyAccount(AccountDto accountDto)
+        public async Task<ApiResponses> ModifyAccount(int id, AccountDto accountDto)
         {            
-            
             ApiResponses apiResponses = new ApiResponses();
 
             try
             {
+                //Check if the account id exists
+                var account = _accountRepository.Get(id);
+
+                if (account.Id != id)
+       
+                    apiResponses.Errors.Add("Invalid account");
 
                 ValidationResult result = await _validator.ValidateAsync(accountDto);
 
@@ -48,12 +53,13 @@ namespace ExpenseTracker_Api.Services
                 }
                 else
                 {
-                    Account _account = _mapper.Map<Account>(accountDto);                    
+                    account.Id = id; 
+                    account.Name = accountDto.Name;
 
-                    _accountRepository.Update(_account);
+                    _accountRepository.Update(account);
 
                     apiResponses.Errors = null;
-                    apiResponses.Result = _account;
+                    apiResponses.Result = account;
                     apiResponses.StatusCode = 200;
                 }
 
@@ -78,8 +84,10 @@ namespace ExpenseTracker_Api.Services
 
             try
             {
+                 _accountRepository.Delete(accountId);
+                
                 apiResponses.Errors = null;
-                apiResponses.Result = _accountRepository.Delete(accountId);
+                apiResponses.Result = $"Account Number ({accountId}) has been removed"; 
                 apiResponses.StatusCode = 200;
             }
             catch (Exception ex)
@@ -110,14 +118,14 @@ namespace ExpenseTracker_Api.Services
             return apiResponses;
         }
 
-        public async Task<ApiResponses> RetrieveAllAccounts()
+        public async Task<ApiResponses> RetrieveAllAccounts(int pageNumber, int pageSize, string searchTerm = "")
         {
             ApiResponses apiResponses = new ApiResponses();
 
             try
             {
                 apiResponses.Errors = null;
-                apiResponses.Result = _accountRepository.GetAll();
+                apiResponses.Result = new { item = _accountRepository.GetAll(pageNumber, pageSize,searchTerm), totalCount = 2};
                 apiResponses.StatusCode = 200;
             }
             catch (Exception ex)
