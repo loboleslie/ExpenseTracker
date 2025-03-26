@@ -28,35 +28,65 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ApiResponses> Index(int pageNumber = 1, int pageSize = 10, string searchTerm = "")
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string searchTerm = "")
         {
             ApiResponses apiResponses = await _accountService.RetrieveAllAccounts(pageNumber, pageSize, searchTerm);
 
-            return apiResponses;
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);    
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
 
         [HttpPost]
-        public async Task<ApiResponses> Add(AccountDto accountDto)
+        public async Task<IActionResult> Add(AccountDto accountDto)
         {
             ApiResponses apiResponses = await _accountService.SaveAccount(accountDto);
+
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);    
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
             
-            return apiResponses;
         }
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<ApiResponses> Edit(int id, [FromBody] AccountDto accountDto)
+        public async Task<IActionResult> Edit(int id, [FromBody] AccountDto accountDto)
         {
             ApiResponses apiResponses =  await _accountService.ModifyAccount(id, accountDto);
-            return apiResponses;
+            
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);    
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
 
         [HttpDelete]
-        public async Task<ApiResponses> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             ApiResponses apiResponses = await _accountService.RemoveAccount(id);
 
-            return apiResponses;
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);    
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
 
     }
