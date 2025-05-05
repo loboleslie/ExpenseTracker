@@ -54,6 +54,11 @@ namespace ExpenseTracker_Api.Repositories
             return _context.Accounts.FirstOrDefault(x => x.Name == accountName);
         }
 
+        public async Task<bool> AccountExists(string accountName)
+        {
+            return await _context.Accounts.AnyAsync(x => x.Name == accountName);
+        }
+
         public Account Update(Account account)
         {
             _context.Entry(account).State = EntityState.Modified;

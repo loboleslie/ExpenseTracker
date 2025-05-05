@@ -29,6 +29,9 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IValidator<AccountDto>, AccountDTOValidator>();
+builder.Services.AddScoped<IValidator<TransactionDto>, TransactionDtoValidator>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+//builder.Services.AddScoped<IValidator<Tran>>()
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddCors(options =>

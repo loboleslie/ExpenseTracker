@@ -1,6 +1,11 @@
 ﻿using ExpenseTracker_Api.DTO;
 using ExpenseTracker_Api.Interface.Repositories;
+using ExpenseTracker_Api.Interface.Services;
 using ExpenseTracker_Api.Models;
+using ExpenseTracker_Api.Models.DTO;
+using ExpenseTracker_Api.Models.Responses;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker_Api.Controllers
@@ -9,42 +14,75 @@ namespace ExpenseTracker_Api.Controllers
     [Route("[controller]")]
     public class TransactionController : ControllerBase
     {
-        private readonly ITransactionRepository _transactionRepository;
-
-        public TransactionController(ITransactionRepository  transactionRepository)
+        private readonly ITransactionService _transactionService;
+        private readonly IValidator<TransactionDto> _validator;
+        public TransactionController(ITransactionService transactionService, IValidator<TransactionDto> validator)
         {
-            _transactionRepository = transactionRepository;
+            _transactionService = transactionService;
+            _validator = validator;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(DateTimeOffset fromDate, DateTimeOffset toDate, int accountId, string searchTerm = "", int pageSize = 10, int pageNumber = 1)
         {
-            
+            ApiResponses apiResponses = await _transactionService.RetrieveAllTransaction(pageNumber, pageSize, fromDate, toDate, accountId, searchTerm);
 
-            return Ok();
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);    
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
 
         [HttpPost]
-        public IActionResult Add(TransactionRequest transactionRequest)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Add(TransactionDto transactionDto)
         {
-            var transaction = new Transaction { Description = transactionRequest.Description, AccountId = transactionRequest.AccountId };
-            _transactionRepository.AddTransaction(transaction);
+            ApiResponses apiResponses = await _transactionService.SaveTransaction(transactionDto);
 
-            return Ok(transaction);
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
+
 
         [HttpPut]
-        public IActionResult Edit(Transaction transaction)
+        [Route("{id}")]
+        public async Task<IActionResult> Edit(int id, [FromBody] TransactionDto transactionDto)
         {
-            _transactionRepository.UpdateTransaction(transaction);
-            return Ok(transaction);
-        }
+            ApiResponses apiResponses = await _transactionService.ModifyTransaction(id, transactionDto);
 
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
+        }
         [HttpDelete]
-        public IActionResult Delete(int id) 
+        public async Task<IActionResult> Delete(int id)
         {
-            _transactionRepository?.DeleteTransaction(id);
-            return Ok();
+            ApiResponses apiResponses = await _transactionService.RemoveTransaction(id);
+
+            if (apiResponses.StatusCode == 200)
+            {
+                return Ok(apiResponses);
+            }
+            else
+            {
+                return BadRequest(apiResponses.Errors);
+            }
         }
 
     }

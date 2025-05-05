@@ -11,5 +11,6 @@ namespace ExpenseTracker_Api.Interface.Repositories
         Account Delete(int accountId);
         Account Get(int id);
         Account GetByName(string accountName);
+        Task<bool> AccountExists(string accountName);
     }
 }

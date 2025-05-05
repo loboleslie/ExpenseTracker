@@ -10,5 +10,7 @@ namespace ExpenseTracker_Api.DTO
         public string? Description { get; set; }
 
         public int AccountId { get; set; }
+        
+        public DateTimeOffset? TransactionDate { get; set; }
     }
 }
