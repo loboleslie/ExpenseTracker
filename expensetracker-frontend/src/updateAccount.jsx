@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useUpdateAccountMutation } from "./api/expensetrackerApi";
+import { useUpdateAccountMutation } from "./api/accountExpenseTrackerApi";
 
 function UpdateAccount({account1, updateIsUpdatingFlag}) {
 

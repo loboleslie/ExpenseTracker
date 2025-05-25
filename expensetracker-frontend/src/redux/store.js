@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
-import { accountExpenseTrackerApi} from "../api/expensetrackerApi";
+import { accountExpenseTrackerApi} from "../api/accountExpenseTrackerApi";
 
 export const store = configureStore({
     reducer: {

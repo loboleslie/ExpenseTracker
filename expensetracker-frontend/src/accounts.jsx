@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useGetAllAccountsQuery, useDeleteAccountMutation } from "./api/expensetrackerApi";
+import { useGetAllAccountsQuery, useDeleteAccountMutation } from "./api/accountExpenseTrackerApi";
 import AddAccount from "./addAccount";
 import UpdateAccount from "./updateAccount";
 
