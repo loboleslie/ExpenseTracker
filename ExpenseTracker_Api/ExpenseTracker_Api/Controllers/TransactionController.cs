@@ -23,9 +23,9 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(DateTimeOffset fromDate, DateTimeOffset toDate, int accountId, string searchTerm = "", int pageSize = 10, int pageNumber = 1)
+        public async Task<IActionResult> Index([FromQuery] TransactionSearchDto  searchDto)
         {
-            ApiResponses apiResponses = await _transactionService.RetrieveAllTransaction(pageNumber, pageSize, fromDate, toDate, accountId, searchTerm);
+            ApiResponses apiResponses = await _transactionService.RetrieveAllTransaction(searchDto);
 
             if (apiResponses.StatusCode == 200)
             {

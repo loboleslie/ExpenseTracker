@@ -10,6 +10,6 @@ namespace ExpenseTracker_Api.Interface.Services
         Task<ApiResponses> ModifyTransaction(int transactionId, TransactionDto transaction);
         Task<ApiResponses> RemoveTransaction(int transactionId);
         Task<ApiResponses> RetrieveTransaction(int transactionId);
-        Task<ApiResponses> RetrieveAllTransaction(int pageNumber, int pageSize, DateTimeOffset fromDate, DateTimeOffset toDate, int accountId, string searchTerm = "");
+        Task<ApiResponses> RetrieveAllTransaction(TransactionSearchDto searchDto);
     }
 }

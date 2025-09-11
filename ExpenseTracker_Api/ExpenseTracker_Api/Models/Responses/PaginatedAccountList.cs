@@ -4,4 +4,5 @@ public class PaginatedAccountList
 {
     public List<Account>? Accounts { get; set; }
     public int TotalCount { get; set; }
+    public int TotalPages { get; set; }
 }

@@ -41,24 +41,20 @@ namespace ExpenseTracker_Api.Repositories
         int pageSize, string searchTerm, DateTimeOffset? fromDate, 
         DateTimeOffset? toDate, int accountId)
         {
-            DateTimeOffset _fromDate;
-            DateTimeOffset _toDate = DateTimeOffset.UtcNow;
+           
             var _accountId = 0;
             List<Transaction> _transactionList;
             int totalPages = 0;
+            int totalCount = 0;
 
-            if (fromDate == null)
-                _fromDate = DateTimeOffset.UtcNow - TimeSpan.FromHours(24);
             
-
-            if (toDate == null)
-                _toDate = DateTimeOffset.UtcNow;
-
             if (accountId == 0)
             {
-                totalPages = _context.Transactions
+                totalCount = _context.Transactions
                                      .Where(i => i.TransactionDate >= fromDate
                                       && i.TransactionDate <= toDate).Count();
+                
+                totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
                 return new PaginatedTransactionList()
                 {
@@ -71,7 +67,8 @@ namespace ExpenseTracker_Api.Repositories
                                             .Take(pageSize)
                                             .OrderBy((s) => s.Description)
                                             .ToList(),
-                    TotalCount = totalPages
+                    TotalCount = totalCount,
+                    TotalPages = totalPages,
                 };
             }
             else
@@ -79,6 +76,8 @@ namespace ExpenseTracker_Api.Repositories
                     totalPages = _context.Transactions
                                          .Where(i => i.TransactionDate <= toDate && 
                                                 i.AccountId == accountId).Count();
+                    
+                    totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
                 return new PaginatedTransactionList()
                 {
@@ -92,7 +91,8 @@ namespace ExpenseTracker_Api.Repositories
                                             .Take(pageSize)
                                             .OrderBy((s) => s.Description)
                                             .ToList(),
-                    TotalCount = totalPages
+                    TotalCount = totalCount,
+                    TotalPages = totalPages,
                 };
 
             }

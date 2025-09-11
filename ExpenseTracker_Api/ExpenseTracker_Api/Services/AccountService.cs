@@ -125,7 +125,7 @@ namespace ExpenseTracker_Api.Services
             try
             {
                 apiResponses.Errors = null;
-                apiResponses.Result = new { item = _accountRepository.GetAll(pageNumber, pageSize,searchTerm), totalCount = 2};
+                apiResponses.Result = new { item = _accountRepository.GetAll(pageNumber, pageSize,searchTerm)};
                 apiResponses.StatusCode = 200;
             }
             catch (Exception ex)

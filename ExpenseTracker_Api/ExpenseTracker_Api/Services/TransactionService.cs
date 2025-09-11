@@ -69,7 +69,7 @@ public class TransactionService : ITransactionService
         {
             apiResponses.StatusCode = 400;
         }
-        catch (Exception)
+        catch (Exception wx)
         {
             apiResponses.Errors.Add("Internal Server Error");
             apiResponses.StatusCode = 500;
@@ -159,14 +159,14 @@ public class TransactionService : ITransactionService
         throw new NotImplementedException();
     }
 
-    public async Task<ApiResponses> RetrieveAllTransaction(int pageNumber, int pageSize, DateTimeOffset fromDate, DateTimeOffset toDate, int accountId, string searchTerm = "")
+    public async Task<ApiResponses> RetrieveAllTransaction(TransactionSearchDto searchDto)
     {
         ApiResponses apiResponses = new ApiResponses();
 
             try
             {
                 apiResponses.Errors = null;
-                apiResponses.Result = new { item =  _transactionRepository.GetAll(pageNumber, pageSize,searchTerm,fromDate,toDate, accountId), totalCount = 2};
+                apiResponses.Result = new { item =  _transactionRepository.GetAll(searchDto.PageNumber , searchDto.PageSize,searchDto.SearchTerm,searchDto.FromDate,searchDto.ToDate, searchDto.AccountId)};
                 apiResponses.StatusCode = 200;
             }
             catch (Exception ex)

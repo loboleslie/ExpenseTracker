@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import Dashboard from './dashboard.jsx';
 import { BrowserRouter, Routes, Route} from 'react-router';
-import Accounts from './accounts.jsx';
+import Accounts from './components/account/accounts.jsx';
 import Transactions from './transactions.jsx';
 import { Provider } from 'react-redux';
 import { store } from './redux/store'

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useGetAllAccountsQuery, useDeleteAccountMutation } from "./api/accountExpenseTrackerApi";
-import AddAccount from "./addAccount";
-import UpdateAccount from "./updateAccount";
+import { useGetAllTransactionsQuery, useDeleteTransactionMutation } from "../../api/transactionExpenseTrackerApi";
+import AddTransaction from "./addTransactions";
+import UpdateTransaction from "./updateTransaction";
 
 
 function Accounts() {
@@ -10,13 +10,13 @@ function Accounts() {
   const [pageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  const [selectAccount, setSelectAccount] = useState(null);
+  const [selectTransaction, setSelectTransaction] = useState(null);
 
-  const [deleteAccount] = useDeleteAccountMutation();
+  const [deleteTransaction] = useDeleteTransactionMutation();
 
 
   const { data, isLoading, isSuccess, isError } =
-    useGetAllAccountsQuery({
+    useGetAllTransactionsQuery({
       pageNumber: currentPage,
       pageSize: pageSize,
       searchTerm: searchTerm
@@ -46,7 +46,7 @@ function Accounts() {
     
     alert(record.name);
     setIsUpdating(true);
-    setSelectAccount({ id: record.id, name: record.name });
+    setSelectTransaction({ id: record.id, name: record.name });
   }
 
   const updateIsUpdatingFlag = (flag) =>
