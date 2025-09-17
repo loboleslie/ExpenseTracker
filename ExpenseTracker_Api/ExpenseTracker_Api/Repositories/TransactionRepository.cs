@@ -42,31 +42,32 @@ namespace ExpenseTracker_Api.Repositories
         DateTimeOffset? toDate, int accountId)
         {
            
-            var _accountId = 0;
+                
             List<Transaction> _transactionList;
             int totalPages = 0;
             int totalCount = 0;
-
             
             if (accountId == 0)
             {
+                                      
                 totalCount = _context.Transactions
-                                     .Where(i => i.TransactionDate >= fromDate
-                                      && i.TransactionDate <= toDate).Count();
-                
+                                     .Where(i => i.TransactionDate >= fromDate.Value.UtcDateTime
+                                      && i.TransactionDate < toDate.Value.UtcDateTime).Count();
+
+               
                 totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
                 return new PaginatedTransactionList()
                 {
                     Transactions = _context.Transactions
-                                           .Where(i => string.IsNullOrEmpty(searchTerm) ||
-                                                  i.Description.Contains(searchTerm) &&
-                                                  i.TransactionDate >= fromDate
-                                                  && i.TransactionDate <= toDate)
-                                            .Skip((pageNumber - 1) * pageSize)
+                                           .Where(i => (string.IsNullOrEmpty(searchTerm) ||
+                                                i.Description.Contains(searchTerm))
+                                                 && i.TransactionDate >= fromDate.Value.UtcDateTime
+                                      && i.TransactionDate < toDate.Value.UtcDateTime)
                                             .Take(pageSize)
                                             .OrderBy((s) => s.Description)
-                                            .ToList(),
+                                            .ToList()
+                                            ,
                     TotalCount = totalCount,
                     TotalPages = totalPages,
                 };
@@ -74,7 +75,7 @@ namespace ExpenseTracker_Api.Repositories
             else
             {
                     totalPages = _context.Transactions
-                                         .Where(i => i.TransactionDate <= toDate && 
+                                         .Where(i => i.TransactionDate <= toDate.Value.UtcDateTime && 
                                                 i.AccountId == accountId).Count();
                     
                     totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -84,8 +85,8 @@ namespace ExpenseTracker_Api.Repositories
                     Transactions = _context.Transactions
                                            .Where(i => string.IsNullOrEmpty(searchTerm) ||
                                                 i.Description.Contains(searchTerm) &&
-                                                i.TransactionDate >= fromDate && 
-                                                i.TransactionDate <= toDate && 
+                                                i.TransactionDate >= fromDate.Value.UtcDateTime && 
+                                                i.TransactionDate < toDate.Value.UtcDateTime && 
                                                 i.AccountId == accountId)
                                             .Skip((pageNumber - 1) * pageSize)
                                             .Take(pageSize)
