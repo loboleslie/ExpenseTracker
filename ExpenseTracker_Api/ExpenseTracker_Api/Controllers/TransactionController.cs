@@ -1,21 +1,19 @@
 ﻿using ExpenseTracker_Api.DTO;
-using ExpenseTracker_Api.Interface.Repositories;
 using ExpenseTracker_Api.Interface.Services;
-using ExpenseTracker_Api.Models;
 using ExpenseTracker_Api.Models.DTO;
 using ExpenseTracker_Api.Models.Responses;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExpenseTracker_Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
         private readonly IValidator<TransactionDto> _validator;
+
         public TransactionController(ITransactionService transactionService, IValidator<TransactionDto> validator)
         {
             _transactionService = transactionService;
@@ -23,67 +21,77 @@ namespace ExpenseTracker_Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery] TransactionSearchDto  searchDto)
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Index([FromQuery] TransactionSearchDto searchDto)
         {
             ApiResponses apiResponses = await _transactionService.RetrieveAllTransaction(searchDto);
-
-            if (apiResponses.StatusCode == 200)
-            {
-                return Ok(apiResponses);    
-            }
-            else
-            {
-                return BadRequest(apiResponses.Errors);
-            }
+            return apiResponses.StatusCode == 200 
+                ? Ok(apiResponses) 
+                : BadRequest(apiResponses);
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Add(TransactionDto transactionDto)
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Add([FromBody] TransactionDto transactionDto)
         {
-            ApiResponses apiResponses = await _transactionService.SaveTransaction(transactionDto);
+            var validationResult = await _validator.ValidateAsync(transactionDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new ApiResponses 
+                { 
+                    StatusCode = 400, 
+                    Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList() 
+                });
+            }
 
-            if (apiResponses.StatusCode == 200)
+            ApiResponses apiResponses = await _transactionService.SaveTransaction(transactionDto);
+            if (apiResponses.StatusCode == StatusCodes.Status201Created && apiResponses.Result is int transactionId)
             {
-                return Ok(apiResponses);
+                var resourceUri = Url.Action(nameof(Index), "Transaction", new { id = transactionId }, Request.Scheme);
+                return Created(resourceUri!, apiResponses);
             }
-            else
-            {
-                return BadRequest(apiResponses.Errors);
-            }
+            return BadRequest(apiResponses);
         }
 
-
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Edit(int id, [FromBody] TransactionDto transactionDto)
         {
-            ApiResponses apiResponses = await _transactionService.ModifyTransaction(id, transactionDto);
+            var validationResult = await _validator.ValidateAsync(transactionDto);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(new ApiResponses 
+                { 
+                    StatusCode = 400, 
+                    Errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList() 
+                });
+            }
 
-            if (apiResponses.StatusCode == 200)
-            {
-                return Ok(apiResponses);
-            }
-            else
-            {
-                return BadRequest(apiResponses.Errors);
-            }
+            ApiResponses apiResponses = await _transactionService.ModifyTransaction(id, transactionDto);
+            if (apiResponses.StatusCode == 404)
+                return NotFound(apiResponses);
+                
+            return apiResponses.StatusCode == 200 
+                ? Ok(apiResponses) 
+                : BadRequest(apiResponses);
         }
-        [HttpDelete]
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponses), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             ApiResponses apiResponses = await _transactionService.RemoveTransaction(id);
-
-            if (apiResponses.StatusCode == 200)
-            {
-                return Ok(apiResponses);
-            }
-            else
-            {
-                return BadRequest(apiResponses.Errors);
-            }
+            if (apiResponses.StatusCode == 404)
+                return NotFound(apiResponses);
+                
+            return apiResponses.StatusCode == 200 
+                ? Ok(apiResponses) 
+                : BadRequest(apiResponses);
         }
-
     }
 }
