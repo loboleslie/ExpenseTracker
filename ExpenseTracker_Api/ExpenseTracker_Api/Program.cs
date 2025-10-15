@@ -1,5 +1,3 @@
-
-
 using ExpenseTracker_Api.Data;
 using ExpenseTracker_Api.Interface.Repositories;
 using ExpenseTracker_Api.Interface.Services;
@@ -17,6 +15,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 // Add services to the container.
 
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
@@ -31,6 +30,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IValidator<AccountDto>, AccountDTOValidator>();
 builder.Services.AddScoped<IValidator<TransactionDto>, TransactionDtoValidator>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IBulkProcessService, BulkProcessService>();
 //builder.Services.AddScoped<IValidator<Tran>>()
 builder.Services.AddAutoMapper(typeof(Program));
 
