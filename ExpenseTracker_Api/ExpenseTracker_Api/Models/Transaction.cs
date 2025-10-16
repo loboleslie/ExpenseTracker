@@ -9,11 +9,11 @@ namespace ExpenseTracker_Api.Models
         [MaxLength(255)]
         public string? Description { get; set; }
 
-        public int AccountId { get; set;}
+        public required int AccountId { get; set;}
         
         public DateTimeOffset TransactionDate { get; set; }
 
-        public Account Account { get; set; }
+        public required Account Account { get; init; }
         public decimal Amount { get; set; }
     }
 }

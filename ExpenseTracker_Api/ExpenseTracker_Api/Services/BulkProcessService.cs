@@ -17,10 +17,12 @@ public class BulkProcessResult
 public class BulkProcessService : IBulkProcessService
 {
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IAccountRepository _accountRepository;
 
-    public BulkProcessService(ITransactionRepository transactionRepository)
+    public BulkProcessService(ITransactionRepository transactionRepository, IAccountRepository accountRepository)
     {
         _transactionRepository = transactionRepository;
+        _accountRepository = accountRepository;
     }
 
     public BulkProcessResult ProcessCsv(string csvContent, int accountId)
@@ -46,6 +48,7 @@ public class BulkProcessService : IBulkProcessService
             {
                 // Check for existing transaction
                 bool exists = _transactionRepository.Exists(transactionDate, Math.Abs(amount), payee, accountId);
+                Account account = _accountRepository.Get(accountId);
                 if (!exists)
                 {
                     var transaction = new Transaction
@@ -53,8 +56,10 @@ public class BulkProcessService : IBulkProcessService
                         TransactionDate = transactionDate,
                         Amount = Math.Abs(amount),
                         Description = payee,
-                        AccountId = accountId
+                        AccountId = accountId,
+                        Account = account
                     };
+                    
                     _transactionRepository.Add(transaction);
                     result.SuccessCount++;
                 }

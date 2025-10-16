@@ -10,5 +10,7 @@ namespace ExpenseTracker_Api.Models
         [Required]
         [MaxLength(255)]
         public string? Name { get; set; }
+
+        public ICollection<AccountPayee>? AccountPayees { get; set; }
     }
 }
