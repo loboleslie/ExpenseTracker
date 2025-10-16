@@ -63,5 +63,14 @@ namespace ExpenseTracker_Api.Repositories
                 TotalPages = totalPages
             };
         }
+
+        public bool Exists(DateTimeOffset transactionDate, decimal amount, string payee, int accountId)
+        {
+            return GetQueryable().Any(x =>
+                x.TransactionDate == transactionDate &&
+                x.Amount == amount &&
+                x.Description == payee &&
+                x.AccountId == accountId);
+        }
     }
 }

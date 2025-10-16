@@ -44,15 +44,25 @@ public class BulkProcessService : IBulkProcessService
                 decimal.TryParse(amountStr, out var amount) &&
                 !string.IsNullOrWhiteSpace(payee))
             {
-                var transaction = new Transaction
+                // Check for existing transaction
+                bool exists = _transactionRepository.Exists(transactionDate, Math.Abs(amount), payee, accountId);
+                if (!exists)
                 {
-                    TransactionDate = transactionDate,
-                    Amount = amount,
-                    Description = payee,
-                    AccountId = accountId
-                };
-                _transactionRepository.Add(transaction);
-                result.SuccessCount++;
+                    var transaction = new Transaction
+                    {
+                        TransactionDate = transactionDate,
+                        Amount = Math.Abs(amount),
+                        Description = payee,
+                        AccountId = accountId
+                    };
+                    _transactionRepository.Add(transaction);
+                    result.SuccessCount++;
+                }
+                else
+                {
+                    result.FailureCount++;
+                    result.ErrorMessages.Add($"Row {row}: Duplicate transaction");
+                }
             }
             else
             {

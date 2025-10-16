@@ -12,6 +12,7 @@ namespace ExpenseTracker_Api.Interface.Repositories
         Transaction? GetTransaction(TransactionDto transactionDto);
         Transaction Update(Transaction account);
         int Delete(int transactionId);
+        bool Exists(DateTimeOffset transactionDate, decimal amount, string payee, int accountId);
 
     }
 }
