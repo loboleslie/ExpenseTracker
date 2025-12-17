@@ -11,5 +11,14 @@ public class ExpenseTrackerDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
 
     public DbSet<Transaction> Transactions { get; set; }
+    
+    public DbSet<AccountPayee> AccountPayees { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<AccountPayee>()
+            .HasKey(ap => new { ap.AccountId, ap.PayeeId });
+    }
+
 }
 
