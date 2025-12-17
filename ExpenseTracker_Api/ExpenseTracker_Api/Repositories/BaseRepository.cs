@@ -25,6 +25,11 @@ namespace ExpenseTracker_Api.Repositories
         {
             return _dbSet.Find(id);
         }
+        
+        public virtual T? Get(int id, int id1)
+        {
+            return _dbSet.Find(id, id1);
+        }
 
         public virtual T Update(T entity)
         {
@@ -36,6 +41,17 @@ namespace ExpenseTracker_Api.Repositories
         public virtual int Delete(int id)
         {
             var entity = _dbSet.Find(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+                _context.SaveChanges();
+            }
+            return id;
+        }
+        
+        public virtual int Delete(int id, int id1)
+        {
+            var entity = _dbSet.Find(id, id1);
             if (entity != null)
             {
                 _dbSet.Remove(entity);
