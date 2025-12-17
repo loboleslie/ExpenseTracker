@@ -43,10 +43,11 @@ namespace ExpenseTracker_Api.Repositories
         {
             var totalCount = _context.Accounts.Where(i => string.IsNullOrEmpty(searchTerm) || i.Name.Contains(searchTerm)).Count();
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            
             return new PaginatedAccountList()
             {
-                Accounts = _context.Accounts.Where(i => string.IsNullOrEmpty(searchTerm) || i.Name.Contains(searchTerm)).Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderBy((s) => s.Name).ToList(),
+                Accounts = _context.Accounts
+                    .Where(i => string.IsNullOrEmpty(searchTerm) || i.Name.Contains(searchTerm)).OrderBy((s) => s.Name)
+                    .Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
                 TotalCount = totalCount,
                 TotalPages = totalPages,
             };
